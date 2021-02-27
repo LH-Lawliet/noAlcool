@@ -24,7 +24,7 @@
     <div id="app">
         <nav>
             <div class="nav-wrapper">
-                <ul class="left">
+                <ul class="left" id="addAlcoolContainer">
                     <li><a id="addAlcool" class="waves-effect waves-light btn" onclick="requestNewAlcool();">Demander l'ajout d'un nouvel élément <i class="material-icons right">add_circle</i></a></li>
                 </ul>
 
@@ -54,6 +54,26 @@
                 </thead>
         
                 <tbody id="AlcoolElements"></tbody>
+            </table>
+        </div>
+
+
+        <div id="admin">
+            <table id="adminTable">
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Nom</th>
+                    <th>Score</th>
+                    <th>Degré d'alcool</th>
+                    <th>Volume</th>
+                    <th>Prix</th>
+                    <th>Catégorie</th>
+                    <th>Source</th>
+                </tr>
+                </thead>
+        
+                <tbody id="AlcoolRequestElements"></tbody>
             </table>
         </div>
     </div>

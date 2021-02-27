@@ -1,5 +1,4 @@
 let titles = [
-    "Dieu a créé l'alcool pour que les moches baisent quand même.",
     "La différence entre une bière et un chasseur, c'est que la bière, ils la font sans alcool...",
     "L'alcool ne résout pas les problèmes, mais l'eau et le lait non plus.",
     "L'alcool tue lentement. On s'en fout. On n'est pas pressés.",
@@ -9,7 +8,7 @@ let titles = [
 ]
 
 let alcoolList = []
-let sessionToken;
+let user = {};
 
 const URL = "https://lhlawliet.xyz:3000";
 const socket = io(URL);
@@ -45,14 +44,14 @@ socket.on("notify", (text) => {
 
 socket.on("registerValidated", (data) => {
     data = JSON.parse(data)
-    sessionToken = data.token;
+    user = data;
     updateConnectionButton()
     hideRegister()
 });
 
 socket.on("connectValidated", (data) => {
     data = JSON.parse(data)
-    sessionToken = data.token;
+    user.token = data.token;
     console.log("C'EST VALIDÉ")
     updateConnectionButton();
     hideConnect();
@@ -60,9 +59,15 @@ socket.on("connectValidated", (data) => {
 
 
 function updateConnectionButton() {
-    if (sessionToken) {
+    if (user.token) {
+        $('#addAlcoolContainer').show()
         $('#connectButtonHolder').html('<li><a id="connect" class="waves-effect waves-light btn" onclick="disconnectButton();">Se déconnecter <i class="material-icons right">person</i></a></li>')
+        if (user.admin == 1) {
+            $('#admin').show()
+        }
     } else {
+        $('#addAlcoolContainer').hide()
+        $('#admin').hide()
         $('#connectButtonHolder').html('<li><a id="connect" class="waves-effect waves-light btn" onclick="connectButton();">Se connecter <i class="material-icons right">person</i></a></li>')
     }
 }
@@ -86,7 +91,7 @@ function tryToConnectButton() {
 
 
 function disconnectButton() {
-    sessionToken = null;
+    user.token = null;
     updateConnectionButton() 
 }
 
@@ -259,7 +264,7 @@ function addNewAlcool() {
         return
     }
 
-    socket.emit("requestNewAlcool", JSON.stringify({alcoolName: alcoolName, alcoolRatio:alcoolRatio, volume:volume, price:price, category:category, source:source}));
+    socket.emit("requestNewAlcool", JSON.stringify({alcoolName: alcoolName, token: user.token, alcoolRatio:alcoolRatio, volume:volume, price:price, category:category, source:source}));
     removeNewAlcool();
 }
 

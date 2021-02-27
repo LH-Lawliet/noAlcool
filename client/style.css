@@ -106,7 +106,26 @@ h1 {
     display: none;
 }
 
+#addAlcoolContainer {
+    display: none;
+}
+
 #table {
+    background-color: #69779b;
+    text-align:center;
+    color: #f0ece2;
+    margin: 15%;
+    margin-top: 5%;
+    width: 70%;
+    
+    border-radius: 1vh;
+}
+
+#admin {
+    display: none;
+}
+
+#adminTable {
     background-color: #69779b;
     text-align:center;
     color: #f0ece2;

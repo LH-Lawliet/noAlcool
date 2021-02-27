@@ -19,16 +19,22 @@ let self = module.exports = {
                 con.query("USE clodo;")
                 if (result.warningCount == 0) {
                     console.log("New database created");
-                    var sql = "CREATE TABLE alcool (id INT(32) NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', alcoolRatio DOUBLE(32,2) NOT NULL, volume DOUBLE(32,2) NOT NULL, price DOUBLE(32,2) NOT NULL, category VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', PRIMARY KEY(id));";
+                    var sql = "CREATE TABLE alcool (id INT(32) NOT NULL AUTO_INCREMENT, creator INT(32) NOT NULL, name VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', alcoolRatio DOUBLE(32,2) NOT NULL, volume DOUBLE(32,2) NOT NULL, price DOUBLE(32,2) NOT NULL, category VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', source TEXT COLLATE 'utf8_general_ci', PRIMARY KEY(id));";
                     con.query(sql, function (err, result) {
                         if (err) throw err;
-                        console.log("Table created");
+                        console.log("alcool table created");
+                    });
+
+                    sql = "CREATE TABLE request (id INT(32) NOT NULL AUTO_INCREMENT, creator INT(32) NOT NULL, name VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', alcoolRatio DOUBLE(32,2) NOT NULL, volume DOUBLE(32,2) NOT NULL, price DOUBLE(32,2) NOT NULL, category VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci', source TEXT COLLATE 'utf8_general_ci', PRIMARY KEY(id));";
+                    con.query(sql, function (err, result) {
+                        if (err) throw err;
+                        console.log("request table created");
                     });
 
                     sql = "CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT,username VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,password VARCHAR(255) NOT NULL,token VARCHAR(255), admin INT NOT NULL, PRIMARY KEY(id));";
                     con.query(sql, function (err, result) {
                         if (err) throw err;
-                        console.log("Table created");
+                        console.log("users table created");
 
                         console.log("Database is now setup")
                     });
@@ -54,13 +60,32 @@ let self = module.exports = {
 
     },
 
-    addAlcool(data, callback) {
-        con.query("INSERT INTO alcool (name, alcoolRatio, volume, price, category, source) VALUES (?,?,?,?,?,?)", [data.alcoolName, data.alcoolRatio, data.volume, data.price, data.category, data.source], function (err, result) {
+    checkToken(token, callback) {
+        let query = "SELECT id FROM users WHERE token = ?;"
+
+        con.query(query, [token], function (err, result) {
             if (err) throw err;
-            if (callback) {
-                callback()
-            }
+            if (result[0]) {
+                callback(result[0].id)
+            } else {
+                callback(false)
+            }        
         });
+    },
+
+    addAlcool(data, callback) {
+        self.checkToken(data.token, function (userId) {
+            if (userId) {
+                con.query("INSERT INTO request (name, creator, alcoolRatio, volume, price, category, source) VALUES (?,?,?,?,?,?,?)", [data.alcoolName, userId, data.alcoolRatio, data.volume, data.price, data.category, data.source], function (err, result) {
+                    if (err) throw err;
+                    if (callback) {
+                        callback()
+                    }
+                });
+            } else {
+                console.log("WRONG TOKEN GIVEN")
+            }
+        })
     },
 
     registerUser(data, callback) {
