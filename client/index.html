@@ -1,0 +1,187 @@
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Never Be Sober Again</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+</head>
+
+<body>
+    <div id="warnBox">
+        <h1>Attention</h1>
+        <p>Ce site peut vous renvoyer vers des liens de marchand vendant de l'alcool</p>
+        <p>De plus nous pouvons être vu comme faisant l'apologie de l'alcool</p>
+        <p>En cliquant sur le bouton ci dessous vous confirmer avoir 18 ans</p>
+        <a id="validate18YOButton" class="waves-effect waves-light btn col s4" onclick="imAdult();">J'ai 18 ans <i class="material-icons right">cake</i></a>
+    </div>
+
+    <div id="app">
+        <nav>
+            <div class="nav-wrapper">
+                <ul class="left">
+                    <li><a id="addAlcool" class="waves-effect waves-light btn" onclick="requestNewAlcool();">Demander l'ajout d'un nouvel élément <i class="material-icons right">add_circle</i></a></li>
+                </ul>
+
+                <a href="" class="brand-logo center">NBSA</a>
+                
+                <ul id="connectButtonHolder" class="right">
+                    <li><a id="connect" class="waves-effect waves-light btn" onclick="connectButton();">Se connecter <i class="material-icons right">person</i></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <h1 id="Title">Never Be Sober Again</h1>
+
+        <div>
+            <table id="table">
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Nom</th>
+                    <th>Score</th>
+                    <th>Degré d'alcool</th>
+                    <th>Volume</th>
+                    <th>Prix</th>
+                    <th>Catégorie</th>
+                    <th>Source</th>
+                </tr>
+                </thead>
+        
+                <tbody id="AlcoolElements"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div id="Login">
+        <h1>Se connecter</h1>
+        <form>
+            <div class="row">
+                <div class="input-field">
+                    <a class="col s2">Email ou Nom d'utilisateur : </a>
+                    <input placeholder="" id="usernameLoginInput" type="text" class="validate col s10">
+                </div>
+
+                <div class="input-field">
+                    <a class="col s2">Mot de passe : </a>
+                    <input placeholder="" id="passwordLoginInput" type="password" class="validate col s10">
+                </div>
+
+                <div>
+                    <a id="connectButton" class="waves-effect waves-light btn col s4" onclick="tryToConnectButton();">Se connecter <i class="material-icons right">person</i></a>
+                    <a id="closeLogin" class="waves-effect waves-light btn col s4 red" onclick="hideConnect();">Retour <i class="material-icons right">cancel</i></a>
+                    <a id="goToRegisterButton" class="waves-effect waves-light btn col s4" onclick="goToRegister();">Créer un compte <i class="material-icons right">person_add</i></a>
+                </div>
+            </div>
+        </form>    
+    </div>
+
+
+    <div id="Register">
+        <h1>Créer un compte</h1>
+        <form>
+            <div class="row">
+                <div class="input-field">
+                    <a class="col s2">Nom d'utilisateur : </a>
+                    <input placeholder="" id="usernameRegisterInput" type="text" class="validate col s10">
+                </div>
+
+                <div class="input-field">
+                    <a class="col s2">Email : </a>
+                    <input placeholder="" id="emailRegisterInput" type="text" class="validate col s10">
+                </div>
+
+                <div class="input-field">
+                    <a class="col s2">Mot de passe : </a>
+                    <input placeholder="" id="passwordRegisterInput" type="password" class="validate col s10">
+                </div>
+
+                <div class="input-field">
+                    <a class="col s2">Confirmer le mot de passe : </a>
+                    <input placeholder="" id="passwordValidationRegisterInput" type="password" class="validate col s10">
+                </div>
+
+                <div>
+                    <a id="connectButton" class="waves-effect waves-light btn col s4" onclick="tryToRegister();">Créer un compte <i class="material-icons right">person</i></a>
+                    <div class="col s4"></div>
+                    <a id="closeLogin" class="waves-effect waves-light btn col s4 red" onclick="hideRegister();">Fermer <i class="material-icons right">cancel</i></a>
+                </div>
+            </div>
+        </form>    
+    </div>
+
+    <div id="RequestNewAlcool">
+        <h1>Demander l'ajout</h1>
+        <form>
+            <div class="row">
+                <div class="input-field">
+                    <a class="col s2">Nom : </a>
+                    <input placeholder="RoséFeuille" id="alcoolName" type="text" class="validate col s10">
+                </div>
+                <div class="input-field">
+                    <a class="col s2">Ratio d'alcool : </a>
+                    <input placeholder="11.5"  step="0.01" id="alcoolRatio" type="number" class="validate col s10">
+                </div>
+                <div class="input-field">
+                    <a class="col s2">Volume : </a>
+                    <input placeholder="1.5"  step="0.01" id="volume" type="number" class="validate col s10">
+                </div>
+                <div class="input-field">
+                    <a class="col s2">Prix : </a>
+                    <input placeholder="2.45" step="0.01" id="price" type="number" class="validate col s10">
+                </div>
+                <div class="input-field">
+                    <a class="col s2">Source : </a>
+                    <input placeholder="https://www.carrefour.fr/p/vin-rouge-de-l-union-europeenne-rougefeuille-premiers-prix-3660989215535" id="source" type="text" class="col s10">
+                </div>
+                <div class="input-field">
+                    <a class="col s2">Catégorie : </a>
+
+                    <p class="col s2">
+                        <label>
+                            <input name="category" type="radio" value='Vin' checked />
+                            <span>Vin</span>
+                        </label>
+                    </p>
+                    <p class="col s2">
+                        <label>
+                            <input name="category" type="radio" value='Bierre' />
+                            <span>Bierre</span>
+                        </label>
+                    </p>
+                    <p class="col s2">
+                        <label>
+                            <input name="category" type="radio" value='Alcool Fort' />
+                            <span>Alcool Fort</span>
+                        </label>
+                    </p>
+                    <p class="col s2">
+                        <label>
+                            <input name="category" type="radio" value='Apéro'/>
+                            <span>Apéro</span>
+                        </label>
+                    </p>
+                </div>
+
+                <div>
+                    <a id="ValidateAddRequest" class="waves-effect waves-light btn col s4" onclick="addNewAlcool();">Valider <i class="material-icons right">done</i></a>
+                    <div class="col s4"></div>
+                    <a id="CancelRequest" class="waves-effect waves-light btn col s4 red" onclick="removeNewAlcool();">Retour <i class="material-icons right">cancel</i></a>
+                </div>
+            </div>
+        </form>    
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.min.js" integrity="sha512-tXH7Av8en7+/hg0XwBppaCDPmpJhUXbZ+j7lNC4y+ZQpmCZQcgQN6RjkM7Irj1MUW7bZengfuTOqR4RzCC4bnA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
