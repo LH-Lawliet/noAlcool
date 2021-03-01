@@ -36,8 +36,6 @@ socket.on("refreshList", (data) => {
     }
     alcoolList = rankList(data)
 
-    console.log(alcoolList)
-
     updateTable(alcoolList)
 });
 
@@ -56,7 +54,6 @@ socket.on("registerValidated", (data) => {
 socket.on("connectValidated", (data) => {
     data = JSON.parse(data)
     user = data;
-    console.log("C'EST VALIDÉ")
     updateConnectionButton();
     hideConnect();
 });
@@ -66,9 +63,7 @@ function updateConnectionButton() {
     if (user.token) {
         $('#addAlcoolContainer').show()
         $('#connectButtonHolder').html('<li><a id="connect" class="waves-effect waves-light btn" onclick="disconnectButton();">Se déconnecter <i class="material-icons right">person</i></a></li>')
-        console.log(user)
         if (user.admin == 1) {
-            console.log("OUI TU EST ADMIN JE VAIS AFFICHER TA MERDE")
             $('#admin').show()
         }
     } else {

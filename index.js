@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const config = require('./config.json');
 const sql = require('./utils/sql.js')
+
 sql.initDB()
 const key = fs.readFileSync(__dirname + '/cert/private.key', 'utf8');
 const cert = fs.readFileSync(__dirname + '/cert/certificate.crt', 'utf8');
