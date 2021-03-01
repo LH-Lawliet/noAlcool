@@ -73,6 +73,17 @@ let self = module.exports = {
         });
     },
 
+    getRequestList(token, callback) {
+        let query = "SELECT * FROM request;"
+
+        self.checkToken(token, function (userId) {
+            con.query(query, [], function (err, result) {
+                if (err) throw err;
+                callback(result)
+            });
+        })
+    },
+
     addAlcool(data, callback) {
         self.checkToken(data.token, function (userId) {
             if (userId) {
@@ -138,7 +149,45 @@ let self = module.exports = {
                 callback("NO USER FINDED")
             }
         })
-    }
+    },
+
+    acceptRequest(data, callback) {
+        self.checkToken(data.token, function (userId) {
+            if (userId) {
+                var sql = 'SELECT * FROM request WHERE id = ?;'
+                con.query(sql, [data.requestId], function (err, result) {
+                    if (result[0].id) {
+                        var sql2 = "DELETE FROM request WHERE id=?";
+                        con.query(sql2, [data.requestId])
+                        con.query("INSERT INTO alcool (name, creator, alcoolRatio, volume, price, category, source) VALUES (?,?,?,?,?,?,?)", [result[0].name, result[0].creator, result[0].alcoolRatio, result[0].volume, result[0].price, result[0].category, result[0].source], function (err, result) {
+                            if (err) throw err;
+                            if (callback) {
+                                callback()
+                            }
+                        });
+                    } else {
+                        console.log("THIS ID DOESNT SEEMS TO EXIST")
+                    }
+                })
+            } else {
+                console.log("WRONG TOKEN GIVEN")
+            }
+        })
+    },
+
+    refuseRequest(data, callback) {
+        self.checkToken(data.token, function (userId) {
+            if (userId) {
+                var sql2 = "DELETE FROM request WHERE id=?";
+                con.query(sql2, [data.requestId])
+                if (callback) {
+                    callback()
+                }
+            } else {
+                console.log("WRONG TOKEN GIVEN")
+            }
+        })
+    },
 };
 
 

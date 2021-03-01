@@ -34,7 +34,7 @@ io.on('connection', client => {
     client.on("refreshList", (data) => {
         data = JSON.parse(data)
         sql.getList(data, function (list) {
-            client.emit("refreshList", list)
+            client.emit("refreshList", JSON.stringify(list))
         })
     })
 
@@ -42,7 +42,7 @@ io.on('connection', client => {
         data = JSON.parse(data)
         sql.addAlcool(data, function () {
             sql.getList({}, function (list) {
-                client.emit("refreshList", list)
+                client.emit("refreshList", JSON.stringify(list))
             })
         })
     })
@@ -72,6 +72,33 @@ io.on('connection', client => {
             }
         })
     })
+
+    client.on("refreshRequestAlcool", (token) => {
+        sql.getRequestList(token, function (list) {
+            client.emit("refreshRequestAlcool", JSON.stringify(list))
+        })
+    })
+
+    client.on("acceptRequest", (data) => {
+        data = JSON.parse(data)
+        sql.acceptRequest(data, function () {
+            sql.getList(data, function (list) {
+                client.emit("refreshList", JSON.stringify(list))
+            })
+            sql.getRequestList(data.token, function (list) {
+                client.emit("refreshRequestAlcool", JSON.stringify(list))
+            })
+        })
+    })
+
+    client.on("refuseRequest", (data) => {
+        data = JSON.parse(data)
+        sql.refuseRequest(data, function () {
+            sql.getRequestList(data.token, function (list) {
+                client.emit("refreshRequestAlcool", JSON.stringify(list))
+            })
+        })
+    })  
     
     client.on('disconnect', () => { /* … */ });
 });

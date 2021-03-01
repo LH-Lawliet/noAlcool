@@ -13,24 +13,28 @@ let user = {};
 const URL = "https://lhlawliet.xyz:3000";
 const socket = io(URL);
 
-
 socket.on("connect", () => {
     console.log(socket.connected); // true
     socket.emit("refreshList", "[]");
 });
 
-socket.on("refreshList", (data) => {
+socket.on("refreshRequestAlcool", (data) => {
+    data = JSON.parse(data)
     for (const element of data) {
         element.score = (element.alcoolRatio*element.volume)/element.price
+        element.score = element.score.toFixed(3)
+    }
+    updateAdminTable(data)
+});
+
+
+socket.on("refreshList", (data) => {
+    data = JSON.parse(data)
+    for (const element of data) {
+        element.score = (element.alcoolRatio*element.volume)/element.price
+        element.score = element.score.toFixed(3)
     }
     alcoolList = rankList(data)
-
-    let i = 1;
-
-    for (const element of data) {
-        element.rank = i
-        i++
-    }
 
     console.log(alcoolList)
 
@@ -51,7 +55,7 @@ socket.on("registerValidated", (data) => {
 
 socket.on("connectValidated", (data) => {
     data = JSON.parse(data)
-    user.token = data.token;
+    user = data;
     console.log("C'EST VALIDÉ")
     updateConnectionButton();
     hideConnect();
@@ -62,7 +66,9 @@ function updateConnectionButton() {
     if (user.token) {
         $('#addAlcoolContainer').show()
         $('#connectButtonHolder').html('<li><a id="connect" class="waves-effect waves-light btn" onclick="disconnectButton();">Se déconnecter <i class="material-icons right">person</i></a></li>')
+        console.log(user)
         if (user.admin == 1) {
+            console.log("OUI TU EST ADMIN JE VAIS AFFICHER TA MERDE")
             $('#admin').show()
         }
     } else {
@@ -208,6 +214,13 @@ function rankList(list) {
     list.sort(function(a, b) { 
         return b.score - a.score;
     })
+
+    i=1
+    for (element of list) {
+        element.rank = i
+        i++
+    }
+
     return list
 }
 
@@ -226,6 +239,35 @@ function updateTable(sortedList) {
     return 
 }
 
+function refreshRequestAlcool() {
+    socket.emit("refreshRequestAlcool", user.token)
+    return 
+}
+
+function updateAdminTable(list) {
+    let code = ""
+    for (element of list) {
+        console.log(element)
+        code += "<tr><td><a class='waves-effect waves-light btn-flat' onclick='acceptRequest("+element.id+");'>ACCEPTER</a></td><td><a class='waves-effect waves-light btn-flat' onclick='refuseRequest("+element.id+");'>REFUSER</a></td><td>"+element.name+"</td><td>"+element.score+"</td><td>"+element.alcoolRatio+"%</td><td>"+element.volume+"l</td><td>"+element.price+"€</td><td>"+element.category+"</td>"
+        if (element.source) {
+            code += "<td> <a href="+element.source+">source</a></td>"
+        }
+        code += "</tr>\n"
+    }
+    $("#AlcoolRequestElements").html(code)
+
+    return 
+}
+
+function acceptRequest(id) {
+    let data = {token:user.token, requestId:id}
+    socket.emit("acceptRequest", JSON.stringify(data))
+}
+
+function refuseRequest(id) {
+    let data = {token:user.token, requestId:id}
+    socket.emit("refuseRequest", JSON.stringify(data))
+}
 
 function addNewAlcool() {
     let alcoolName = $("#alcoolName").val();
