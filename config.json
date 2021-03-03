@@ -1,7 +1,7 @@
 {
     "mysqlHost": "localhost",
     "mysqlUser": "root",
-    "mysqlpass": "hu63ru26&*",
+    "mysqlpass": "",
     "webPort" : 666,
     "socketPort": 3000
 }
